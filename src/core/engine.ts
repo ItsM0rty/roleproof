@@ -54,6 +54,7 @@ export function analyze(text: string, facts: Extraction, profile: Profile): Anal
   else if (facts.compensation.length === 1) {
     const range = facts.compensation[0];
     if (range.maximum < range.minimum) salary.detail = 'The extracted salary range is inverted and cannot be compared.';
+    else if (range.currency === 'UNKNOWN') salary.detail = 'The listing does not identify a currency unambiguously. A dollar sign alone does not establish which currency applies.';
     else if (range.currency !== profile.currency) salary.detail = `The listing uses ${range.currency}; your preference uses ${profile.currency}. No exchange-rate assumption was made.`;
     else if (range.kind !== 'base') salary.detail = 'The figure is total compensation or does not explicitly identify base pay. Confirm the cash component.';
     else if (range.period === 'hour' || range.period === 'unspecified') salary.detail = 'The pay period cannot be converted to annual cash without additional assumptions.';

@@ -154,8 +154,9 @@ cases and avoid publishing result files containing private descriptions.
   in localStorage or a database.
 - Live extraction sends the listing to the model provider. The candidate profile
   is compared by the local API and is not included in the extraction prompt.
-- Up to 32 extracted listings remain in server memory for 15 minutes, reused
-  across preference changes. A restart clears the cache. There is no disk cache.
+- Up to 32 extracted listings are cached in server memory. Extractions are reused
+  for 15 minutes across preference changes; expired entries remain in memory until
+  eviction or restart. A restart clears the cache. There is no disk cache.
 - The local API caps uncached calls at 20 per ten minutes and two concurrent
   extractions. Each extraction permits one schema retry; SDK retries are disabled.
 - The key remains server-side. `.env`, results, build artifacts, and dependencies
