@@ -129,7 +129,7 @@ function App() {
       </section>
       <section className="principles"><div><span>01 / TRACEABLE</span><h3>Every claim has a source.</h3><p>Exact quotations are checked against the listing before they support a conclusion.</p></div><div><span>02 / CONSERVATIVE</span><h3>Unknown is a useful answer.</h3><p>Missing information stays visible. It never quietly becomes an automatic rejection.</p></div><div><span>03 / REPRODUCIBLE</span><h3>The decisions are inspectable.</h3><p>Export the facts and explanation. Run the labelled policy cases from the repository.</p></div></section>
     </main>
-    <footer><span>RoleProof <span className="footer-separator">/</span> Built by Suyash Bhattarai</span><span>Job matches, explained.</span><a href="https://github.com/ItsM0rty/roleproof">View on GitHub <Icon name="arrow" size={14} /></a></footer>
+    <footer><span>© 2026 Suyash Bhattarai</span><span>Job matches, explained.</span><a href="https://github.com/ItsM0rty/roleproof">View on GitHub <Icon name="arrow" size={14} /></a></footer>
   </>;
 }
 
