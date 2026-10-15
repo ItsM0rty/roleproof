@@ -45,6 +45,18 @@ The server intentionally binds to loopback. This is a local demo, not a hosted
 multi-user service. If changing the frontend/API ports, also change the Vite proxy
 and the origin allowlist in `server/app.ts`.
 
+### Browser-only hosted demo
+
+The portfolio demo at https://www.suyashbhattarai.com.np/demo-roleproof uses
+saved, clearly labelled facts. Preferences and source highlights work in the
+browser without a server or model request. Custom-listing extraction remains
+available through the local setup above.
+
+`npm run build:demo` produces this static version, with asset URLs rooted at
+`/demos/roleproof/`. The portfolio serves the generated HTML at `/demo-roleproof`
+and the assets under `/demos/roleproof/assets/`. This mode never calls `/api/health`
+or `/api/analyze` and links to the local setup for custom listings.
+
 ## What the demo decides
 
 | Dimension | Supported | Contradicted | Unknown |

@@ -19,3 +19,4 @@ jobs:
           cache: npm
       - run: npm ci --no-fund --no-audit
       - run: npm run check
+      - run: npm run build:demo

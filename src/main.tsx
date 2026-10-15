@@ -5,6 +5,8 @@ import type { Citation, Extraction, Profile } from './core/schema';
 import { defaultProfile, allSamples as samples } from './data/samples';
 import './styles.css';
 
+const staticDemo = import.meta.env.MODE === 'demo';
+
 function Icon({ name, size = 18 }: { name: 'arrow' | 'check' | 'document' | 'download' | 'plus'; size?: number }) {
   const paths = { arrow: 'M5 12h14m-6-6 6 6-6 6', check: 'm5 12 4 4L19 6', document: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm0 0v6h6M8 13h8M8 17h5', download: 'M12 3v12m-5-5 5 5 5-5M5 17v4h14v-4', plus: 'M12 5v14M5 12h14' };
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name]} /></svg>;
@@ -30,6 +32,7 @@ function App() {
   const analysis = facts ? analyze(text, facts, profile) : null;
 
   useEffect(() => {
+    if (staticDemo) return;
     const controller = new AbortController();
     fetch('/api/health', { signal: controller.signal }).then(r => r.json()).then(data => setLiveEnabled(data.liveEnabled === true)).catch(() => undefined);
     return () => controller.abort();
@@ -74,8 +77,8 @@ function App() {
   const supported = analysis?.findings.filter(f => f.active && f.status === 'supported').length ?? 0;
   return <>
     <header className="topbar">
-      <a href="/" className="brand">RoleProof<span className="prototype">PROTOTYPE</span></a>
-      <nav aria-label="Main navigation"><a href="https://github.com/ItsM0rty/roleproof" target="_blank" rel="noreferrer">Source & methodology <Icon name="arrow" size={15} /></a><span className="local-status"><i /> Local workspace</span></nav>
+      <a href={staticDemo ? '/demo-roleproof' : '/'} className="brand">RoleProof<span className="prototype">PROTOTYPE</span></a>
+      <nav aria-label="Main navigation">{staticDemo && <a href="/work-roleproof">Case study</a>}<a href="https://github.com/ItsM0rty/roleproof" target="_blank" rel="noreferrer">Source & methodology <Icon name="arrow" size={15} /></a><span className="local-status"><i />{staticDemo ? 'Interactive demo' : 'Local workspace'}</span></nav>
     </header>
     <main>
       <section className="intro">
@@ -98,7 +101,7 @@ function App() {
             <input id="skills" value={skillsInput} maxLength={500} placeholder="React, TypeScript" onChange={e => { setSkillsInput(e.target.value); setProfile({ ...profile, skills: e.target.value.split(',').map(s => s.trim()).filter(Boolean).slice(0,12).map(s => s.slice(0,60)) }); }} />
             <p className="field-note">Separate with commas. A missing mention stays unknown.</p>
             <div className="legend"><h3>Three useful answers</h3><p><span className="status-dot supported" /><strong>Supported</strong><span>Evidence meets your preference</span></p><p><span className="status-dot contradicted" /><strong>Contradicted</strong><span>Evidence points to a mismatch</span></p><p><span className="status-dot unknown" /><strong>Unknown</strong><span>Missing, ambiguous, or conflicting</span></p></div>
-            <div className="preference-footer"><span className="line-icon"><Icon name="document" /></span><p>Preferences are compared locally. Live extraction sends only the listing to the model provider.</p></div>
+            <div className="preference-footer"><span className="line-icon"><Icon name="document" /></span><p>{staticDemo ? 'This demo compares saved facts in your browser. No model requests or account needed.' : 'Preferences are compared locally. Live extraction sends only the listing to the model provider.'}</p></div>
           </aside>
 
           <div className="match-column">
@@ -120,7 +123,7 @@ function App() {
             <p className="muted small">{custom ? 'Paste the original description. No URL fetching or account access.' : 'Select a source reference to highlight the exact passage.'}</p>
             {custom && !facts ? <textarea className="listing-input" aria-label="Job description" maxLength={24000} value={text} disabled={busy} onChange={e => { setText(e.target.value); setSelected(null); }} placeholder="Paste a job description here…" /> : <pre className="source-text" ref={sourceRef} tabIndex={0}>{selected ? <>{text.slice(0,selected.start)}<mark>{text.slice(selected.start,selected.end)}</mark>{text.slice(selected.end)}</> : text}</pre>}
             {custom ? <div className="live-controls"><p className="field-note">{liveEnabled ? 'Live mode sends this text to your configured OpenAI model. Extracted facts are reused for 15 minutes. Restarting the server clears stored facts.' : 'Live mode needs OPENAI_API_KEY in the local server .env file. The examples work without one.'}</p><button className="primary-button" disabled={busy || text.trim().length < 30 || !liveEnabled} onClick={() => void run()}>{busy ? 'Analyzing…' : 'Analyze listing'}<Icon name="arrow" size={16} /></button>{facts && <button className="text-button" onClick={() => { setFacts(null); setMeta(null); setSelected(null); }}>Edit listing</button>}{error && <p className="error" role="alert">{error}</p>}</div> : <div className="source-disclaimer"><span className="status-dot unknown" /><p>{sample.source ? <>Public excerpt retrieved {sample.source.retrieved}. Facts are hand-authored, not live model output. This does not establish a product defect. <a href={sample.source.url} target="_blank" rel="noreferrer">Read the complete listing ↗</a></> : 'Fictional company and listing. Facts are hand-authored to demonstrate the comparison policy, not generated by a live model.'}</p></div>}
-            <button className="add-listing" onClick={openCustom}><Icon name="plus" size={16} /> Analyze your own listing <Icon name="arrow" size={16} /></button>
+            {staticDemo ? <a className="add-listing" href="https://github.com/ItsM0rty/roleproof#run-locally" target="_blank" rel="noreferrer"><Icon name="plus" size={16} /> Try custom listings locally <Icon name="arrow" size={16} /></a> : <button className="add-listing" onClick={openCustom}><Icon name="plus" size={16} /> Analyze your own listing <Icon name="arrow" size={16} /></button>}
           </aside>
         </div>
       </section>

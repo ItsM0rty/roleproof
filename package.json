@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "concurrently -k -n api,web \"tsx watch --env-file-if-exists=.env server/index.ts\" \"vite --host 127.0.0.1\"",
     "build": "tsc --noEmit && vite build",
+    "build:demo": "tsc --noEmit && vite build --mode demo --base=/demos/roleproof/",
     "start": "tsx --env-file-if-exists=.env server/index.ts",
     "test": "vitest run",
     "test:watch": "vitest",
