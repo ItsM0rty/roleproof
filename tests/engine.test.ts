@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { analyze, cite } from '../src/core/engine';
 import { cases } from '../evals/cases';
-import { samples, defaultProfile } from '../src/data/samples';
+import { samples, publicSample, defaultProfile } from '../src/data/samples';
 
 describe('labelled decision policy', () => {
   for (const example of cases) it(example.description, () => {
@@ -14,6 +14,12 @@ describe('labelled decision policy', () => {
 });
 
 describe('source references and preference changes', () => {
+  it('keeps ambiguity in the dated public Matcha excerpt visible without claiming a defect', () => {
+    const result = analyze(publicSample.text, publicSample.facts, defaultProfile);
+    expect(result.findings.map(f => f.status)).toEqual(['unknown','unknown','supported']);
+    expect(result.warnings).toEqual([]);
+    for (const finding of result.findings) for (const ref of finding.citations) expect(publicSample.text.slice(ref.start, ref.end)).toBe(ref.quote);
+  });
   it('uses JavaScript string offsets consistently for Unicode highlighting', () => {
     const text = 'Résumé: 日本語. Annual salary: USD 90,000.';
     const result = cite(text, 'Annual salary: USD 90,000.');

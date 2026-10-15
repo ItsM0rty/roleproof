@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { analyze } from './core/engine';
 import type { Citation, Extraction, Profile } from './core/schema';
-import { defaultProfile, samples } from './data/samples';
+import { defaultProfile, allSamples as samples } from './data/samples';
 import './styles.css';
 
 function Icon({ name, size = 18 }: { name: 'arrow' | 'check' | 'document' | 'download' | 'plus'; size?: number }) {
@@ -65,7 +65,7 @@ function App() {
   }
 
   function download() {
-    const blob = new Blob([JSON.stringify({ version: 1, mode: custom ? 'live' : 'synthetic-replay', profile, text, facts, analysis, meta }, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify({ version: 1, mode: custom ? 'live' : sample.source ? 'public-excerpt-replay' : 'synthetic-replay', source: custom ? undefined : sample.source, profile, text, facts, analysis, meta }, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a'); link.href = url; link.download = 'roleproof-explanation.json'; link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -105,7 +105,7 @@ function App() {
             <div className="section-heading"><span className="step">02</span><h2>The explanation</h2></div>
             <div className="sample-control"><label htmlFor="sample">Explore an example</label><select id="sample" value={custom ? '' : sample.id} onChange={e => chooseSample(e.target.value)}><option value="" disabled>Custom listing</option>{samples.map(s => <option key={s.id} value={s.id}>{s.company} · {s.subtitle}</option>)}</select></div>
             <div className="role-heading"><div className="company-avatar">{custom ? <Icon name="document" size={24} /> : sample.company[0]}</div><div><span className="company-name">{custom ? 'Your listing' : sample.company}</span><h3>{custom ? 'Analyze a job description' : sample.title}</h3></div></div>
-            <span className="mode-label">{custom ? 'LIVE EXTRACTION' : 'SYNTHETIC EXAMPLE · SAVED FACTS'}</span>
+            <span className="mode-label">{custom ? 'LIVE EXTRACTION' : sample.source ? 'PUBLIC EXCERPT · SAVED FACTS' : 'SYNTHETIC EXAMPLE · SAVED FACTS'}</span>
             {analysis ? <>
               <div className={`verdict ${analysis.verdict === 'Preferences supported' ? 'positive' : ''}`} aria-live="polite"><div className="verdict-title"><span className="verdict-symbol">{analysis.verdict === 'Preferences supported' ? <Icon name="check" size={23} /> : '?'}</span><h3>{analysis.verdict}</h3></div><p>{supported} of {analysis.findings.filter(f => f.active).length} preferences supported by the listing. {analysis.verdict === 'Needs clarification' ? 'Keep this role in view and resolve the open questions.' : analysis.verdict === 'Potential mismatch' ? 'Review the specific restriction before investing time.' : 'Review the full requirements before applying.'}</p></div>
               <div className="findings">{analysis.findings.map((finding, i) => <article key={finding.dimension} className="finding"><div className="finding-top"><h4><span className="finding-index">0{i+1}</span>{finding.label}</h4><span className={`status-pill ${finding.status}`}>{finding.active ? finding.status : 'No preference'}</span></div><p>{finding.detail}</p><div className="citation-buttons">{Array.from(new Map(finding.citations.map(c => [c.start, c])).values()).map((c, j) => <button className={`citation-button ${selected?.start === c.start ? 'selected' : ''}`} key={`${c.start}-${j}`} onClick={() => showCitation(c)}><Icon name="document" size={12} /> Source {j + 1}<span aria-hidden="true">↗</span></button>)}</div></article>)}</div>
@@ -119,7 +119,7 @@ function App() {
             <div className="section-heading source-title"><div><span className="step">03</span><h2>The source</h2></div><span className="source-tag">{custom ? 'YOUR TEXT' : 'EXAMPLE'}</span></div>
             <p className="muted small">{custom ? 'Paste the original description. No URL fetching or account access.' : 'Select a source reference to highlight the exact passage.'}</p>
             {custom && !facts ? <textarea className="listing-input" aria-label="Job description" maxLength={24000} value={text} disabled={busy} onChange={e => { setText(e.target.value); setSelected(null); }} placeholder="Paste a job description here…" /> : <pre className="source-text" ref={sourceRef} tabIndex={0}>{selected ? <>{text.slice(0,selected.start)}<mark>{text.slice(selected.start,selected.end)}</mark>{text.slice(selected.end)}</> : text}</pre>}
-            {custom ? <div className="live-controls"><p className="field-note">{liveEnabled ? 'Live mode sends this text to your configured OpenAI model. Listings are cached in server memory for 15 minutes.' : 'Live mode needs OPENAI_API_KEY in the local server .env file. The examples work without one.'}</p><button className="primary-button" disabled={busy || text.trim().length < 30 || !liveEnabled} onClick={() => void run()}>{busy ? 'Analyzing…' : 'Analyze listing'}<Icon name="arrow" size={16} /></button>{facts && <button className="text-button" onClick={() => { setFacts(null); setMeta(null); setSelected(null); }}>Edit listing</button>}{error && <p className="error" role="alert">{error}</p>}</div> : <div className="source-disclaimer"><span className="status-dot unknown" /><p>Fictional company and listing. Facts are hand-authored to demonstrate the comparison policy, not generated by a live model.</p></div>}
+            {custom ? <div className="live-controls"><p className="field-note">{liveEnabled ? 'Live mode sends this text to your configured OpenAI model. Listings are cached in server memory for 15 minutes.' : 'Live mode needs OPENAI_API_KEY in the local server .env file. The examples work without one.'}</p><button className="primary-button" disabled={busy || text.trim().length < 30 || !liveEnabled} onClick={() => void run()}>{busy ? 'Analyzing…' : 'Analyze listing'}<Icon name="arrow" size={16} /></button>{facts && <button className="text-button" onClick={() => { setFacts(null); setMeta(null); setSelected(null); }}>Edit listing</button>}{error && <p className="error" role="alert">{error}</p>}</div> : <div className="source-disclaimer"><span className="status-dot unknown" /><p>{sample.source ? <>Public excerpt retrieved {sample.source.retrieved}. Facts are hand-authored, not live model output. This does not establish a product defect. <a href={sample.source.url} target="_blank" rel="noreferrer">Read the complete listing ↗</a></> : 'Fictional company and listing. Facts are hand-authored to demonstrate the comparison policy, not generated by a live model.'}</p></div>}
             <button className="add-listing" onClick={openCustom}><Icon name="plus" size={16} /> Analyze your own listing <Icon name="arrow" size={16} /></button>
           </aside>
         </div>

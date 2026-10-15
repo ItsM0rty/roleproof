@@ -4,7 +4,7 @@ import { defaultProfile, samples } from '../src/data/samples';
 export type EvalCase = { id: string; description: string; text: string; facts: Extraction; profile: Profile; expected: [Status, Status, Status]; category: string };
 const base = samples[1];
 function salaryCase(id: string, quote: string, range: Extraction['compensation'][number], expected: Status): EvalCase {
-  return { id, description: id.replaceAll('-', ' '), text: base.text + '\n' + quote, facts: { ...base.facts, compensation: [{ ...range, quote }] }, profile: defaultProfile, expected: ['supported', expected, 'supported'], category: 'compensation' };
+  return { id, description: id.replaceAll('-', ' '), text: base.text.replace(base.facts.compensation[0].quote, quote), facts: { ...base.facts, compensation: [{ ...range, quote }] }, profile: defaultProfile, expected: ['supported', expected, 'supported'], category: 'compensation' };
 }
 const basePay = { minimum: 80000, maximum: 110000, currency: 'USD', period: 'year' as const, kind: 'base' as const, quote: '' };
 

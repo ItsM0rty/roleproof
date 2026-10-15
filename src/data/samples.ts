@@ -1,6 +1,6 @@
 import type { Extraction, Profile } from '../core/schema';
 
-export type Sample = { id: string; company: string; title: string; subtitle: string; text: string; facts: Extraction };
+export type Sample = { id: string; company: string; title: string; subtitle: string; text: string; facts: Extraction; source?: { url: string; retrieved: string } };
 export const defaultProfile: Profile = { country: 'NP', minimumSalary: 60000, currency: 'USD', skills: ['React', 'TypeScript'] };
 
 export const samples: Sample[] = [
@@ -44,3 +44,18 @@ export const samples: Sample[] = [
     },
   },
 ];
+
+export const publicSample: Sample = {
+  id: 'matcha-public-excerpt', company: 'Matcha', title: 'Founding Full-stack Software Engineer', subtitle: 'Public listing excerpt, 15 Oct 2026',
+  source: { url: 'https://matcha.fm/apply/fse', retrieved: '2026-10-15' },
+  text: 'Founding Full-stack Software Engineer\n\nFull-time · Fully remote (US, Canada, Europe, UK, Brazil, LATAM) · $128k to $150k per year + equity\n\nWe are stack agnostic: strong experience in any modern stack (Rails, Elixir, Go, etc.) works, as long as you are open to picking up ours (TypeScript, React)\n\nCompensation: $128k to $150k per year + equity\n\nFully remote and async, work from anywhere on your own schedule\n\nThe same salary regardless of where you live\n\nRemote setup ok with B2B contract or EOR',
+  facts: {
+    location: [
+      { scope: 'locations', values: ['US','CA','Europe','GB','BR','LATAM'], rule: 'allowed', quote: 'Fully remote (US, Canada, Europe, UK, Brazil, LATAM)' },
+      { scope: 'worldwide', values: [], rule: 'unclear', quote: 'Fully remote and async, work from anywhere on your own schedule' },
+    ],
+    compensation: [{ minimum: 128000, maximum: 150000, currency: 'UNKNOWN', period: 'year', kind: 'unspecified', quote: 'Compensation: $128k to $150k per year + equity' }],
+    skills: [{ name: 'TypeScript', quote: 'ours (TypeScript, React)' }, { name: 'React', quote: 'ours (TypeScript, React)' }],
+  },
+};
+export const allSamples = [...samples, publicSample];
