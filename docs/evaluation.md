@@ -12,18 +12,16 @@
 - Manual browser checks for citation highlighting, country and salary changes,
   custom-listing input, and the explicit missing-key state.
 
-The UI also includes a short public excerpt of Matcha's full-stack listing,
-retrieved 2026-10-15 from https://matcha.fm/apply/fse. Its saved facts are manually
-annotated and tested separately from the synthetic evaluation set. The original
-listing is linked in the UI. It demonstrates what the excerpt leaves unclear,
-not a confirmed Matcha product bug or a determination of candidate eligibility.
+The UI includes five fictional listings with hand-authored facts. An additional
+regression case checks ambiguous hiring arrangements and currency separately
+from the 23-scenario policy evaluation set.
 
 The policy set has nine location cases, ten compensation cases, one additional
 technology case, and three fabricated-evidence cases. Each checks all three
 dimensions, but these are correlated examples, not 69 independent observations.
 The fixtures are written alongside the policy and are not held out. Passing them
 demonstrates the specified behavior only. There is no measured retrieval quality,
-user benefit, cost saving, or performance improvement over Matcha.
+user benefit, cost saving, or commercial-system performance improvement.
 
 ## Live comparison
 

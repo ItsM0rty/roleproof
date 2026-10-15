@@ -61,6 +61,5 @@ controls. Do not add a tunnel as a substitute for that work.
 
 An ATS/listing data contract, real labelled examples, employer-specific hiring
 metadata, model/version pinning, extraction drift monitoring, an agreed region
-policy, appropriate privacy controls, and review of unknowns. Matcha's internal
-requirements and current feature set have not been inspected. The prototype is
+policy, appropriate privacy controls, and review of unknowns. The prototype is
 an independently runnable example of a possible product behavior.

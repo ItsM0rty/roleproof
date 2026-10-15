@@ -25,8 +25,8 @@ npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:4317. Four clearly labelled synthetic examples and a dated
-public Matcha listing excerpt work without credentials. Change country, cash minimum, or technologies; select a Source
+Open http://127.0.0.1:4317. Five clearly labelled fictional examples work without
+credentials. Change country, cash minimum, or technologies; select a Source
 reference to highlight its quotation; export the explanation as JSON.
 
 To analyze your own listing, copy `.env.example` to `.env`, set `OPENAI_API_KEY`
@@ -113,7 +113,7 @@ production build. CI runs on Windows and Ubuntu with Node 22 and 24.
 Initial local verification: **35 tests passed; 23/23 synthetic policy scenarios
 passed**. The integration test uses the real Instructor package and OpenAI SDK
 against a local fake HTTP provider, including a schema validation retry. These
-numbers do **not** measure live LLM accuracy, job-search outcomes, or Matcha's system.
+numbers do **not** measure live LLM accuracy or real-world job-search outcomes.
 See [evaluation methodology](docs/evaluation.md).
 
 ### Live baseline comparison
