@@ -48,7 +48,7 @@ const summary = ['baseline', 'roleproof'].map(kind => {
 });
 await mkdir('evals/results', { recursive: true });
 const file = `evals/results/live-${new Date().toISOString().replaceAll(':','-')}.json`;
-await writeFile(file, JSON.stringify({ created: new Date().toISOString(), model, dataset: 'synthetic-v1', caveat: 'Small author-labelled synthetic set, not held-out or representative of Matcha. Failed calls may incur unreported tokens. No measured product lift is implied.', rates: { inputUSDPerMillion: inputRate, outputUSDPerMillion: outputRate }, summary, rows }, null, 2));
+await writeFile(file, JSON.stringify({ created: new Date().toISOString(), model, dataset: 'synthetic-v1', caveat: 'Small author-labelled synthetic set, not held-out or representative of real job distributions. Failed calls may incur unreported tokens. No measured product lift is implied.', rates: { inputUSDPerMillion: inputRate, outputUSDPerMillion: outputRate }, summary, rows }, null, 2));
 console.table(summary);
 console.log(`Report: ${file}. Costs require explicitly supplied current token rates; failures may incur additional cost.`);
 process.exitCode = errors ? 1 : 0;
