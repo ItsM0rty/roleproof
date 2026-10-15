@@ -1,0 +1,42 @@
+{
+  "name": "roleproof",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "author": "Suyash Bhattarai <bhattarai.suyash777@gmail.com>",
+  "description": "Evidence-backed job match explanations with explicit uncertainty.",
+  "engines": { "node": ">=22.12" },
+  "scripts": {
+    "dev": "concurrently -k -n api,web \"tsx watch --env-file-if-exists=.env server/index.ts\" \"vite --host 127.0.0.1\"",
+    "build": "tsc --noEmit && vite build",
+    "start": "tsx --env-file-if-exists=.env server/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "eval": "tsx scripts/evaluate.ts",
+    "eval:live": "tsx --env-file-if-exists=.env scripts/evaluate-live.ts",
+    "check": "npm run test && npm run eval && npm run build"
+  },
+  "dependencies": {
+    "@instructor-ai/instructor": "1.7.0",
+    "express": "^5.1.0",
+    "openai": "^4.104.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^9.2.0",
+    "supertest": "^7.1.4",
+    "@types/supertest": "^6.0.3",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "vite": "^6.4.1",
+    "vitest": "^3.2.4"
+  }
+}
